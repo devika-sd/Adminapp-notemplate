@@ -1,0 +1,73 @@
+[{
+  "_id": {
+    "$oid": "60c873bd5c2daf23b8b4a4e1"
+  },
+  "role": "admin",
+  "status": true,
+  "name": "vrushali bollu",
+  "email": "Vrushali@gmail.com",
+  "password": "$2b$10$9eQ6FUAjgOgryqEh8sOgJ.a/F3BCY2DNYypgDugktuXccl5IQIxZm",
+  "address": "c-1 group, markandey vasahat, solapur",
+  "phonenumber": "9966552233",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "60c996498b055f1ff4e54706"
+  },
+  "role": "user",
+  "status": true,
+  "name": "padmaja bollu",
+  "email": "Padmaja@gmail.com",
+  "password": "Padmaja@06",
+  "phonenumber": "9284219956",
+  "address": "c-1 group, markandey vasahat, solapur",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "60c998608b055f1ff4e54707"
+  },
+  "role": "user",
+  "status": true,
+  "name": "sankarshan bollu",
+  "email": "Sankarshan@gmail.com",
+  "password": "$2b$10$f2DwmehcmvfakES8g0G9H.QdnsdX3fEAPR.Qd7u1X2QoGmPYcdbjm",
+  "phonenumber": "2222222222",
+  "address": "c-1 group, markandey vasahat, solapur",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "60c999278b055f1ff4e54708"
+  },
+  "role": "user",
+  "status": true,
+  "name": "geeta bollu",
+  "email": "Geeta@gmail.com",
+  "password": "$2b$10$SyBcIGiYYQmnLkP88afMOeclmxEXqA30riYt4o6/aVKbzSck7HETW",
+  "phonenumber": "2222222221",
+  "address": "c-1 group, markandey vasahat, solapur",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "60c999948b055f1ff4e54709"
+  },
+  "role": "user",
+  "status": true,
+  "name": "gayu balla",
+  "email": "Gayu@gmail.com",
+  "password": "$2b$10$4t64g3KFhigWrJgqTVpWg./mqtZSm3U2KdQo0DQuh4xSw8ZueuYiC",
+  "phonenumber": "2221222221",
+  "address": "c-1 group, markandey vasahat, solapur",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "60c999bc8b055f1ff4e5470a"
+  },
+  "role": "user",
+  "status": true,
+  "name": "hrushikesh balla",
+  "email": "Hrushikesh@gmail.com",
+  "password": "$2b$10$np8Kfe1URfsP9ovJjUmIgeaJG6pnI1mdVPHI1XhloKG2TGhGJ/xlC",
+  "phonenumber": "2221222251",
+  "address": "c-1 group, markandey vasahat, solapur",
+  "__v": 0
+}]
