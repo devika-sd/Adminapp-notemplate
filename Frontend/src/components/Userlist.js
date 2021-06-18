@@ -3,78 +3,27 @@ import { Table } from 'react-bootstrap'
 import authHeader from '../services/auth-header'
 import Pagination from 'react-bootstrap/Pagination'
 import {Link} from 'react-router-dom'
-export default class Userlist extends Component {
+import {connect} from 'react-redux';
+import * as useractions from '../action/user-action';
+class Userlist extends Component {
 
     constructor() {
         super()
-        this.state = { users: [], active: 1, pageno: [1, 2, 3] }
+        this.state = { users: [], active: 1,limit:3, pageno: [1, 2, 3] }
     }
 
     componentDidMount() {
-        // fetch('http://localhost:8080/api/v1/users/',{
-        //     headers: authHeader() 
-        // })
-        // .then(res=>res.json())
-        // .then(data=>{
-        //     console.log(data);
-        //     this.setState({users: data.data})
-        // })
         this.getUsers();
     }
 
-
-    onDeleteUser(email) {
-        console.log(email)
-        fetch('http://localhost:8080/api/v1/users/' + email, {
-            method: 'DELETE',
-            // headers: { 'Content-Type': 'application/json' }
-            headers: authHeader()
-            //body: JSON.stringify(inputs)
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                this.getUsers();
-                console.log(data)
-            });
-    }
-
-    getUsers() {
-        // console.log(this.state.active)
-        fetch('http://localhost:8080/api/v1/users?page=' + this.state.active + "&limit=" + 3, {
-            headers: authHeader()
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                this.setState({ users: data.data })
-            })
-    }
-
-    onBlockUser(email, status) {
-        fetch('http://localhost:8080/api/v1/users/block/' + email + '&' + !status, {
-            method: 'PATCH',
-            // headers: { 'Content-Type': 'application/json' }
-            //body: JSON.stringify(inputs)
-            headers: authHeader()
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                this.getUsers();
-                console.log(data)
-            });
-    }
-    onUpdateUser(id) {
-        this.props.history.push("/updateuser/" + id);
-    }
     async changepage(value) {
         await this.setState({ active: value });
         await this.getUsers();
-        console.log(this.state.active)
 
+    }
+    async getUsers()
+    {
+        await this.props.onGetUsers("?page="+this.state.active+"&limit=" + this.state.limit);
     }
     async updatepagination(current) {
         if (this.state.pageno[2] < 12) {
@@ -95,11 +44,21 @@ export default class Userlist extends Component {
                     temparr[i] = temparr[i] - 3;
                 }
                 let tempactive = temparr[0];
-                console.log(tempactive)
                 await this.setState({ pageno: temparr, active: tempactive });
                 await this.getUsers();
             }
         }
+    }
+
+    onDeleteUser(email) {
+        this.props.onDelete(email,"?page="+this.state.active+"&limit=" + this.state.limit);
+    }
+
+    onBlockUser(email, status) {
+        this.props.onBlock(email,status,"?page="+this.state.active+"&limit=" + this.state.limit);
+    }
+    onUpdateUser(id) {
+        this.props.history.push("/updateuser/" + id);
     }
 
     render() {
@@ -110,7 +69,7 @@ export default class Userlist extends Component {
 
         })
 
-        let userList = this.state.users.map((user, i) => {
+        let userList = this.props.users.map((user, i) => {
             return (
                 <tr key={i}>
                     <td>{i + 1}</td>
@@ -161,3 +120,18 @@ export default class Userlist extends Component {
         )
     }
 }
+const mapStateToProps  =(state)=>{
+    return { users:state.userReducer.users
+             
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onBlock: (email,status,filter)=>dispatch(useractions.blockusers(email,status,filter)),
+        onDelete: (email,filter)=>dispatch(useractions.deleteusers(email,filter)),
+        onGetUsers: (filter)=>dispatch(useractions.fetchusers(filter))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)( Userlist);

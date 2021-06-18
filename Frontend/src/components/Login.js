@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import authHeader from '../services/auth-header';
-
+import {connect} from 'react-redux';
+import * as useractions from '../action/user-action';
+import * as authactions from '../action/auth-actions';
 
 
 class Login extends Component {
@@ -32,24 +34,28 @@ class Login extends Component {
         this.setState({ password: value })
     }
     login() {
-        fetch('http://localhost:8080/api/v1/users/login', {
-            method: 'POST',
-            headers: authHeader(),
-            body: JSON.stringify({email:this.state.email,password:this.state.password}),
-            })
-            .then(response => response.json())
-            .then(data=>{
-                console.log(data);               
-            if (data.status === true)
-                {
-                    localStorage.setItem('token', data.token);
-                    this.props.history.push('/dashboard');
-                }
-                else
-                {
-                    alert(data.message);
-                }
-            })
+        // fetch('http://localhost:8080/api/v1/users/login', {
+        //     method: 'POST',
+        //     headers: authHeader(),
+        //     body: JSON.stringify({email:this.state.email,password:this.state.password}),
+        //     })
+        //     .then(response => response.json())
+        //     .then(data=>{
+        //         console.log(data);   
+        //         //this.props.onUserLogin(data);   
+                        
+        //     if (data.status === true)
+        //         {
+        //             localStorage.setItem('token', data.token);
+        //             this.props.history.push('/dashboard');
+        //         }
+        //         else
+        //         {
+        //             alert(data.message);
+        //         }
+        //     })
+            this.props.onAuthLogin({email:this.state.email,password:this.state.password});  
+            this.props.onUserLogin({email:this.state.email,password:this.state.password}); 
     }
     
     render() {
@@ -91,4 +97,17 @@ class Login extends Component {
     }
 }
 
-export default Login;
+const mapStateToProps  =(state)=>{
+    return { userReducer:state.userReducer.currentUser,
+             authReducer:state.authReducer.authenticated
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUserLogin: (user)=>dispatch(useractions.loginusers(user)),
+        onAuthLogin: (user)=>dispatch(authactions.userLogin(user))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

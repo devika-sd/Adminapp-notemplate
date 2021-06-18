@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Card, Form, Button, Row, Col } from 'react-bootstrap'
 import authHeader from '../services/auth-header'
 import {useParams} from "react-router-dom"
+import {connect} from 'react-redux';
+import * as useractions from '../action/user-action';
 
-function UserProfile() {
+function UserProfile(props) {
 
     let { id } = useParams();
     const [address, setAddress] = useState('');
@@ -19,27 +21,16 @@ function UserProfile() {
     const [emailError, setEmailError] = useState(true)
     const [passwordError, setPasswordError] = useState(true)
     const [contactError, setContactError] = useState(true)
-
-
-    useEffect(() => {
-        fetch('http://localhost:8080/api/v1/users?_id='+id,
-            {
-                method: 'GET',
-                headers: authHeader()
-            })
-            .then(res => res.json())
-            .then(data => {
-                // console.log(data)
-                // this.setState({ todolist: data })
-                console.log(data.data)
-                setName(data.data[0].name)
-                setEmail(data.data[0].email)
-                setPassword(data.data[0].password)
-                setContact(data.data[0].phonenumber)
-                setAddress(data.data[0].address)
-                // setRole(data.data[0].role)
-            });
-    }, [])
+    console.log(id+"**********before************")
+    useEffect(async() => {
+        await props.onGetUsers("?_id="+id);
+        console.log(props.users[0]);
+        setName(props.users[0].name)
+        setEmail(props.users[0].email)
+        setPassword(props.users[0].password)
+        setContact(props.users[0].phonenumber)
+        setAddress(props.users[0].address)
+    }, [props.users[0].name,id])
     // methods for Events
     const onAddressChange = (event) => {
         var addressValue = (event.target.value);
@@ -111,20 +102,7 @@ function UserProfile() {
     const Update = async (event) => {
         let roleData = { name, email, password, address, phonenumber }
         console.log(roleData)
-        await fetch('http://localhost:8080/api/v1/users/60c999bc8b055f1ff4e5470a',
-            {
-                method: 'PUT',
-                headers: authHeader(),
-                body: JSON.stringify(roleData)
-            })
-            .then(res => {
-                console.log(res);
-                if (res.status === 200) {
-                    // this.setState({ message: "Successfully inserted" })
-                    console.log("Successfully inserted")
-                }
-            })
-
+        props.onUpdate(id,roleData)
         setEnable(true)
         // FetchCalls.registerUser(roleData)
         // event.preventDefault()
@@ -380,4 +358,19 @@ function UserProfile() {
         </>
     )
 }
-export default UserProfile
+const mapStateToProps  =(state)=>{
+    return { 
+        users:state.userReducer.users,
+        currentUser:state.userReducer.users     
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdate: (id,roledata)=>dispatch(useractions.updateusers(id,roledata)),
+        onGetUsers: (id)=>dispatch(useractions.fetchusers(id))
+
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)( UserProfile);

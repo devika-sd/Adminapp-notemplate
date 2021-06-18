@@ -45,7 +45,7 @@ const updateUserDetails = asyncHandler(async (req, res, next) => {
     // 60c8ab82d8fd8e071c8211c5
     console.log(users)
     if (!users) throw new Error(`User id ${req.params._id} not found`)
-    res.json({ success: true, data: users });
+    res.json({ success: true, data: [users] });
 
 })
 
