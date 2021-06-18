@@ -3,10 +3,26 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {applyMiddleware, combineReducers, createStore} from 'redux';
+import userReducer from './store/user-reducer';
+import thunkMiddleware from 'redux-thunk';
+import {Provider} from 'react-redux';
+
+const loggerMiddleware = storeAPI => next => action => {
+  console.log('dispatching', action)
+  let result = next(action)
+  console.log('next state', storeAPI.getState())
+  return result
+}
+
+const myEnhancer = applyMiddleware(loggerMiddleware,thunkMiddleware)
+const appStore = createStore(combineReducers({userReducer}) , myEnhancer)
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={appStore}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
