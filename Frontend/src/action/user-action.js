@@ -32,9 +32,14 @@ export const updateusers = (_id,roleData) => {
             })
             .then(res=>res.json())
             .then(data => {
-                if (data.status === 200) {
+                console.log("*************"+data.success);
+                if (data.success === true) {
                     // this.setState({ message: "Successfully inserted" })
-                    dispatch({ type: UPDATE_USER, payload: data.data[0] });
+                    dispatch({ type: UPDATE_USER, payload: data.data });
+                }
+                else{
+                    console.log("*************"+data.success);
+                    alert("not updated"+data.success)
                 }
             })
     }

@@ -6,6 +6,7 @@ import * as AiIcons from 'react-icons/ai';
 import { SidebarData } from './SidebarData';
 import SubMenu from './SubMenu';
 import { IconContext } from 'react-icons/lib';
+import {connect} from 'react-redux';
 
 const Nav = styled.div`
   background: #131a22;
@@ -47,7 +48,7 @@ const SidebarWrap = styled.div`
 
 
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
@@ -72,6 +73,10 @@ const Sidebar = () => {
 
             </NavIcon>
             {SidebarData.map((item, index) => {
+                if(item.title==="Profile")
+                {
+                  item.path="/userprofile/"+props.currentUser
+                }
               return <SubMenu item={item} key={index} />;
             })}
           </SidebarWrap>
@@ -81,4 +86,11 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+const mapStateToProps  =(state)=>{
+  return { 
+    currentUser:state.userReducer.currentUser,
+  }
+}
+
+
+export default connect(mapStateToProps, null)(Sidebar);

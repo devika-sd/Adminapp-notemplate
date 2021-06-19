@@ -9,6 +9,7 @@ import authReducer from './store/auth-reducer';
 import thunkMiddleware from 'redux-thunk';
 import {Provider} from 'react-redux';
 
+
 const loggerMiddleware = storeAPI => next => action => {
   console.log('dispatching', action)
   let result = next(action)
@@ -18,6 +19,8 @@ const loggerMiddleware = storeAPI => next => action => {
 
 const myEnhancer = applyMiddleware(loggerMiddleware,thunkMiddleware)
 const appStore = createStore(combineReducers({userReducer,authReducer}) , myEnhancer)
+
+window.store=appStore;
 
 ReactDOM.render(
   <React.StrictMode>

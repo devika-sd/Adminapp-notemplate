@@ -9,7 +9,7 @@ class Userlist extends Component {
 
     constructor() {
         super()
-        this.state = { users: [], active: 1,limit:3, pageno: [1, 2, 3] }
+        this.state = { users: [], active: 1,limit:10, pageno: [1, 2, 3] }
     }
 
     componentDidMount() {
@@ -121,8 +121,8 @@ class Userlist extends Component {
     }
 }
 const mapStateToProps  =(state)=>{
-    return { users:state.userReducer.users
-             
+    return {
+     users:state.userReducer.users         
     }
 }
 

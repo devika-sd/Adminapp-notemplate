@@ -361,7 +361,6 @@ function UserProfile(props) {
 const mapStateToProps  =(state)=>{
     return { 
         users:state.userReducer.users,
-        currentUser:state.userReducer.users     
     }
 }
 

@@ -11,16 +11,19 @@ const reducer = (state = initialState, action) =>{
     switch(action.type){
         case actions.FETCH_USERS:
             return {
-                 users: action.payload
+                users: action.payload,
+                currentUser:state.currentUser
             }
         case actions.UPDATE_USER:
             return {
-                // users: action.payload
+                 users: action.payload,
+                 currentUser:state.currentUser
             }
         case actions.LOGIN_USER:
             return {
                 // users: action.payload
-                currentUser:action.payload
+                currentUser:action.payload,
+                users:state.users
             }
         case actions.ADD_USER:
             if(action.payload.success){
