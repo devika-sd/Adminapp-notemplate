@@ -33,7 +33,7 @@ class Login extends Component {
         }
         this.setState({ password: value })
     }
-    login() {
+    async login() {
         // fetch('http://localhost:8080/api/v1/users/login', {
         //     method: 'POST',
         //     headers: authHeader(),
@@ -54,8 +54,9 @@ class Login extends Component {
         //             alert(data.message);
         //         }
         //     })
-            this.props.onAuthLogin({email:this.state.email,password:this.state.password});  
-            this.props.onUserLogin({email:this.state.email,password:this.state.password}); 
+            await this.props.onAuthLogin({email:this.state.email,password:this.state.password});  
+            await this.props.onUserLogin({email:this.state.email,password:this.state.password});
+            alert(this.props.message);
     }
     
     render() {
@@ -98,8 +99,10 @@ class Login extends Component {
 }
 
 const mapStateToProps  =(state)=>{
-    return { userReducer:state.userReducer.currentUser,
-             authReducer:state.authReducer.authenticated
+    return { 
+            userReducer:state.userReducer.currentUser,
+            message:state.userReducer.message,
+            authenticated:state.authReducer.authenticated
     }
 }
 

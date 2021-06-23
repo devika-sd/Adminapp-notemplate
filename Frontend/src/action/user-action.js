@@ -4,19 +4,21 @@ export const FETCH_USERS = "FETCH_USERS"
 export const UPDATE_USER = "UPDATE_USER"
 export const LOGIN_USER = "LOGIN_USER"
 export const ADD_USER = "ADD_USER"
+export const ERROR_USER = "ERROR_USER"
+
 
 export const fetchusers = (filter) => {
     //add your code
     console.log("***************"+filter);
     return dispatch => {
-        fetch('http://localhost:8080/api/v1/users' + filter , {
+        fetch('http://localhost:8080/api/v1/users?sort=name&' + filter , {
             headers: authHeader()
         })
             .then(res => res.json())
             .then(data => {
                 //this.setState({ users: data.data })
-                console.log(data)
-                dispatch({ type: FETCH_USERS, payload: data.data });
+                console.log(data.total)
+                dispatch({ type: FETCH_USERS, payload: data });
             })
     }
 }
@@ -39,7 +41,10 @@ export const updateusers = (_id,roleData) => {
                 }
                 else{
                     console.log("*************"+data.success);
-                    alert("not updated"+data.success)
+                    dispatch({
+                        type: ERROR_USER,
+                        payload: data.message
+                    });
                 }
             })
     }
@@ -95,16 +100,21 @@ export const loginusers = (user) => {
             })
             .then(res => res.json())
             .then(data => {
-                if (data.status) {
+                if (data.success) {
                     // localStorage.setItem('token', data.token);
+                    console.log("token"+data.token)
+                    localStorage.setItem('token', data.token);
                     dispatch({
                         type: LOGIN_USER,
-                        payload: data.userid
+                        payload: data
                     });
-                    // show an alert message or transition into dashboard component
+                    // show an alert message or transition into dashboard component ERROR_USER
                 }
                 else {
-                    throw new Error(data.message);
+                    dispatch({
+                        type: ERROR_USER,
+                        payload: data
+                    });
                 }
             })
         }
@@ -126,7 +136,20 @@ export const addusers = (user) => {
         })
             .then(res => res.json())
             .then(users => {
-                dispatch(saveUser(users));
+                console.log(users)
+                if(users.success)
+                {
+                    dispatch(fetchusers(""));
+                    dispatch(saveUser(users));
+                }
+                else
+                {
+                    dispatch({
+                        type: ERROR_USER,
+                        payload: users
+                    });
+                }
+                
             })
     }
 }

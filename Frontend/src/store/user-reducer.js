@@ -2,7 +2,8 @@ import * as actions from '../action/user-action';
 let initialState = {
     users: [
     ],
-    currentUser:""
+    currentUser:"",
+    totaluser:""
 }
 
 // Reducers in store to modify state -- don't directly manipulate state
@@ -11,31 +12,35 @@ const reducer = (state = initialState, action) =>{
     switch(action.type){
         case actions.FETCH_USERS:
             return {
-                users: action.payload,
-                currentUser:state.currentUser
+                ...state,
+                message:"",
+                users: action.payload.data,
+                totaluser:action.payload.total,
             }
         case actions.UPDATE_USER:
             return {
+                ...state,
                  users: action.payload,
-                 currentUser:state.currentUser
+                 message: action.payload.message
             }
         case actions.LOGIN_USER:
             return {
                 // users: action.payload
-                currentUser:action.payload,
-                users:state.users
+                ...state,
+                currentUser:action.payload.userid,
+                message: action.payload.message
+            }
+        case actions.ERROR_USER:
+            return {
+                // users: action.payload
+                ...state,
+                message: action.payload.message
             }
         case actions.ADD_USER:
-            if(action.payload.success){
                 return {
-                    message: 'User successfully added!'
+                    ...state,
+                    message: action.payload.message
                 }
-            }
-            else{
-                return {
-                    message: 'User failed to added!'
-                }
-            } 
         default : return state
     }
  

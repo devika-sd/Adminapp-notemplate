@@ -5,6 +5,7 @@ require('colors');
 const errorHandler=require('./middleware/errorhandler');
 const databaseConnection=require('./db');
 const userRoute = require('./routes/users');
+const orderRoute = require('./routes/orders');
 require('dotenv').config();
 
 
@@ -15,6 +16,8 @@ app.use(express.json());
 databaseConnection();
 
 app.use("/api/v1/users",userRoute);
+app.use("/api/v1/orders",orderRoute);
+
 
 app.use(errorHandler);
 

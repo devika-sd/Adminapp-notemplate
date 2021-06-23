@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import * as actions from '../action/user-action';
 
@@ -7,9 +7,14 @@ class Adduser extends Component {
     constructor() {
         super();
         this.state = {
-            name: '', email: '', password: '', phonenumber: '', address: '', nameError: '', emailError: '', passwordError: '',
-            phonenumberError: '', addressError: '', namevalid: 0, emailvalid: 0, passwordvalid: 0, address: 0, phonenumbervalid: 0, addressvalid: 0,
-            role: '', roleError:'', rolevalid: 0
+            name: '', email: '', password: '', phonenumber: '', housenumber:'', locality:'', city:'', country:'',  pincode:'', nameError: '', emailError: '', passwordError: '',
+            phonenumberError: '', namevalid: 0, emailvalid: 0, passwordvalid: 0, phonenumbervalid: 0,
+            role: '', roleError: '', rolevalid: 0, housenumbervalid : 0, localityvalid : 0, cityvalid :0, countryvalid : 0, pincodevalid : 0,
+            state1 :["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+            "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+            "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+            "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+            "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"], select:'', selectvalid : 0
         };
     }
 
@@ -86,30 +91,67 @@ class Adduser extends Component {
 
     }
 
-    addressCheck(event) {
+
+    roleCheck(event) {
         let value = event.target.value
-        const address = new RegExp('[a-zA-Z\s]{3,10}')
-        if (!address.test(value)) {
-            this.setState({ addressError: "please enter a valid address", addressvalid: 0 })
+        if (value === 0) {
+            this.setState({ roleError: ' Please Select Role', rolevalid: 0 })
         }
+
         else {
-            this.setState({ addressError: '', addressvalid: 1 })
+            this.setState({ role: value, rolevalid: 1 })
         }
-        this.setState({ address: value })
     }
 
-    roleCheck(event){
+    housenumberCheck(event){
         let value = event.target.value
-        if(value === 0){
-            this.setState({roleError: ' Please Select Role', rolevalid: 0 })
-        }
-        
-        else{
-            this.setState({role: value,  rolevalid: 1})
+        const housenumber = new RegExp("^[0-9]{1,4}$");
+        if(housenumber.test(value)){
+            this.setState({ housenumber: value, housenumbervalid: 1 })
         }
     }
 
-    validateUser() {
+    localityCheck(event){
+        let value = event.target.value
+        const locality = new RegExp('[a-zA-Z\s]{5,30}')
+        if(locality.test(value)){
+            this.setState({ locality: value, localityvalid: 1 })
+        }
+    }
+    
+    citycheck(event){
+        let value = event.target.value
+        const city = new RegExp('[a-zA-Z\s]{5,30}')
+        if(city.test(value)){
+            this.setState({ city: value, cityvalid: 1 })
+        }
+    }
+
+    countryCheck(event) {
+        let value = event.target.value
+        if (value === 0) {
+            this.setState({ country: value, countryvalid: 0 })
+        }
+
+        else {
+            this.setState({ country: value, countryvalid: 1 })
+        }
+    }
+    
+    stateCheck(event){
+        let value = event.target.value
+        this.setState({ select: value, selectvalid :1 });
+    }
+
+    pincodeCheck(event){
+        let value = event.target.value
+        const pincode = new RegExp("^[0-9]{6}$");
+        if (pincode.test(value)) {
+            this.setState({ pincode: value, pincodevalid :1 })
+        }
+    }
+
+    async validateUser() {
         // fetch('http://localhost:8080/api/v1/users/', {
         //     method: 'POST', 
         //     headers:authHeader(),
@@ -127,21 +169,22 @@ class Adduser extends Component {
         //             alert(data.message)
         //         }
         //     })
-        let user = { name: this.state.name, email: this.state.email, password: this.state.password, phonenumber: this.state.phonenumber, address: this.state.address, role:this.state.role };
+        let user = { name: this.state.name, email: this.state.email, password: this.state.password, phone: this.state.phonenumber,isAdmin: this.state.role,addresses:[{houseNumber:this.state.housenumber,city:this.state.city,locality:this.state.locality,country:this.state.country,state:this.state.select,pinCode:this.state.pincode}] };
         console.log(user)
-        this.props.onAddUser(user);
+        await this.props.onAddUser(user);
+        alert(this.props.message);
     }
 
 
     render() {
         var check = true;
-        if ((this.state.emailvalid === 1) && (this.state.passwordvalid === 1) && (this.state.namevalid === 1) && (this.state.addressvalid === 1) && (this.state.phonenumbervalid === 1) &&(this.state.rolevalid === 1)) {
+        if ((this.state.emailvalid === 1) && (this.state.passwordvalid === 1) && (this.state.namevalid === 1) && (this.state.phonenumbervalid === 1) && (this.state.rolevalid === 1) && (this.state.housenumbervalid === 1) && (this.state.localityvalid === 1) && (this.state.cityvalid === 1) && (this.state.countryvalid === 1) && (this.state.selectvalid === 1) && (this.state.pincodevalid === 1)) {
             check = false;
         }
-        // console.log(this.validatecount);
+        console.log({ name: this.state.name, email: this.state.email, password: this.state.password, phone: this.state.phonenumber,isAdmin: this.state.role,addresses:[{houseNumber:this.state.housenumber,city:this.state.city,locality:this.state.locality,country:this.state.country,state:this.state.select,pinCode:this.state.pincode}] });
         return (
             <div>
-                <div className="page-header" style={{ width: '80%', margin: '10px auto' }}>
+                <div className="page-header" style={{ width: '50%', margin: '30px auto' }}>
                     <div className="row">
                         <div className="col-md-12 grid-margin stretch-card">
                             <div className="card">
@@ -181,16 +224,49 @@ class Adduser extends Component {
                                         <Form.Group>
                                             <Form.Control as="select" onChange={this.roleCheck.bind(this)} custom size="lg">
                                                 <option value="0">Select Role</option>
-                                                <option value="admin">Admin</option>
-                                                <option value="user">User</option>
+                                                <option value ={true} >Admin</option>
+                                                <option value={false}>User</option>
                                             </Form.Control>
                                             <p className="help-block text-danger">{this.state.roleError}</p>
                                         </Form.Group><br />
 
-                                        <Form.Group>
-                                            <Form.Control id="exampleInputUsername1" className="form-control" onChange={this.addressCheck.bind(this)} as="textarea" rows={3} placeholder="Address" size="lg" />
-                                            <p className="help-block text-danger">{this.state.addressError}</p>
-                                        </Form.Group><br />
+                                        <Form.Label>Address</Form.Label>
+
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="formGridHouseNumber">
+                                                <Form.Control type="number" className="form-control" onChange={this.housenumberCheck.bind(this)} id="exampleInputUsername1" placeholder="HouseNumber" size="lg" />
+                                            </Form.Group>
+
+                                            <Form.Group as={Col} controlId="formGridLocality">
+                                                <Form.Control type="text" className="form-control" onChange={this.localityCheck.bind(this)} placeholder="Locality" size="lg" />  
+                                            </Form.Group>
+
+                                            <Form.Group as={Col} controlId="formGridState">
+                                                <Form.Control as="select" onChange={this.stateCheck.bind(this)} custom size="lg">
+                                                    <option>Select State</option>
+                                                    {this.state.state1.map(data =>(
+                                                        <option title={data}>{data}</option>
+                                                    ))}
+                                                </Form.Control>
+                                            </Form.Group>
+                                        </Form.Row><br />
+
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="formGridCity">
+                                                <Form.Control type="text" className="form-control" onChange={this.citycheck.bind(this)} id="exampleInputUsername1" placeholder="City" size="lg" />
+                                            </Form.Group>
+
+                                            <Form.Group as={Col} controlId="formGridCountry">
+                                                <Form.Control as="select" onChange={this.countryCheck.bind(this)} custom size="lg">
+                                                    <option value="0">Select Country</option>
+                                                    <option value="India">India</option>
+                                                </Form.Control>
+                                            </Form.Group>
+
+                                            <Form.Group as={Col} controlId="formGridZip">
+                                                <Form.Control type="number" className="form-control" onChange= {this.pincodeCheck.bind(this)} id="exampleInputUsername1" placeholder="PinCode" size="lg" />
+                                            </Form.Group>
+                                        </Form.Row><br />
                                         <Button type="button" className="btn btn-gradient-primary mr-2" onClick={this.validateUser.bind(this)} disabled={check} >Add</Button>
 
                                     </form>
@@ -206,7 +282,7 @@ class Adduser extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        message: state.message
+        message: state.userReducer.message
     }
 }
 

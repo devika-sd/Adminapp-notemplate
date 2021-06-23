@@ -2,15 +2,15 @@ export const USER_LOGIN = "USER_LOGIN"
 
 
 
-export const login = (status) => {
-    console.log('In auth action: ', status)
-    if(!status){
+export const login = (success) => {
+    console.log('In auth action: ', success)
+    if(!success){
         console.log('Removing token ****************** ')
         localStorage.removeItem('token');
     }
     return {
         type: USER_LOGIN,
-        payload: status
+        payload: success
     }
 }
 
@@ -36,14 +36,11 @@ export const userLogin = (user) => {
         .then(res=>res.json())
         .then(data=>{
             console.log(data);
-            if(data.status){
+            if(data.success){
                 console.log('In auth servicee ......')
                 localStorage.setItem('token', data.token);
-                dispatch(login(data.status));
+                dispatch(login(data.success));
                 // show an alert message or transition into dashboard component
-            }
-            else{
-                throw new Error(data.message);
             }
         })
 

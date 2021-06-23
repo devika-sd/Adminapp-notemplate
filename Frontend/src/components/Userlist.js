@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-import authHeader from '../services/auth-header'
 import Pagination from 'react-bootstrap/Pagination'
-import {Link} from 'react-router-dom'
-import {connect} from 'react-redux';
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux';
 import * as useractions from '../action/user-action';
 class Userlist extends Component {
 
-    constructor() {
-        super()
-        this.state = { users: [], active: 1,limit:10, pageno: [1, 2, 3] }
+    constructor(props) {
+        super(props)
+        this.state = { users: [], active: 1,maxpage:1, limit: 5, pageno: [1, 2, 3], open: false }
     }
 
     componentDidMount() {
@@ -21,16 +20,32 @@ class Userlist extends Component {
         await this.getUsers();
 
     }
-    async getUsers()
-    {
-        await this.props.onGetUsers("?page="+this.state.active+"&limit=" + this.state.limit);
+    async getUsers() {
+        await this.props.onGetUsers("page=" + this.state.active + "&limit=" + this.state.limit);
     }
     async updatepagination(current) {
-        if (this.state.pageno[2] < 12) {
+        var max=1;
+        max=this.props.total/this.state.limit;
+        console.log(max);
+        this.setState({maxpage:max});
+        if(current === 'initial')
+        {
+            let temparrr=[1,2,3];
+            await this.setState({pageno: temparrr, active: 1 });
+            await this.getUsers();
+        }
+        if(current === 'final')
+        {
+            let temp=max > Math.floor(this.props.total/this.state.limit)?Math.floor(max)+1:Math.floor(max);
+            let temparrr=[temp-2,temp-1,temp];
+            await this.setState({pageno: temparrr, active: temp });
+            await this.getUsers();
+        }
+        if (this.state.pageno[2] < max) {
             if (current === "next") {
                 var temparr = [...this.state.pageno];
                 for (let i = 0; i < temparr.length; i++) {
-                    temparr[i] = temparr[i] + 3;
+                    temparr[i] = temparr[i] + 1;
                 }
                 let tempactive = temparr[0];
                 await this.setState({ pageno: temparr, active: tempactive });
@@ -41,7 +56,7 @@ class Userlist extends Component {
             if (this.state.pageno[0] !== 1) {
                 var temparr = [...this.state.pageno];
                 for (let i = 0; i < temparr.length; i++) {
-                    temparr[i] = temparr[i] - 3;
+                    temparr[i] = temparr[i] - 1;
                 }
                 let tempactive = temparr[0];
                 await this.setState({ pageno: temparr, active: tempactive });
@@ -51,11 +66,11 @@ class Userlist extends Component {
     }
 
     onDeleteUser(email) {
-        this.props.onDelete(email,"?page="+this.state.active+"&limit=" + this.state.limit);
+        this.props.onDelete(email, "page=" + this.state.active + "&limit=" + this.state.limit);
     }
 
     onBlockUser(email, status) {
-        this.props.onBlock(email,status,"?page="+this.state.active+"&limit=" + this.state.limit);
+        this.props.onBlock(email, status, "page=" + this.state.active + "&limit=" + this.state.limit);
     }
     onUpdateUser(id) {
         this.props.history.push("/updateuser/" + id);
@@ -75,11 +90,10 @@ class Userlist extends Component {
                     <td>{i + 1}</td>
                     <td>{user.name}</td>
                     <td>{user.email}</td>
-                    <td>{user.phonenumber}</td>
-                    <td>{user.address}</td>
-                    <td><Link to={"/userprofile/"+user._id}><button className="btn btn-primary" >Update</button></Link> </td>
+                    <td>{user.phone}</td>
+                    <td><Link to={"/userprofile/" + user._id}><button className="btn btn-primary" >Update</button></Link> </td>
                     <td><button className="btn btn-primary" onClick={() => { this.onDeleteUser(user.email) }}> Delete </button></td>
-                    <td><button className="btn btn-primary" onClick={() => { this.onBlockUser(user.email, user.status) }}>{user.status ? "Block" : "Unblock"}  </button></td>
+                    <td><button className="btn btn-primary" onClick={() => { this.onBlockUser(user.email, user.isBlocked) }}>{user.isBlocked ? "Unblock" : "Block"}  </button></td>
                 </tr>
             )
         })
@@ -99,7 +113,6 @@ class Userlist extends Component {
                             <th>UserName</th>
                             <th>Email Id</th>
                             <th>Contact Number</th>
-                            <th>Address</th>
                             <th>update</th>
                             <th>delete</th>
                             <th>Block/Unblock</th>
@@ -109,29 +122,32 @@ class Userlist extends Component {
                         {userList}
                     </tbody>
                 </Table>
-                <div style={{marginLeft:"45%"}}>
-                    <Pagination>
+                <div>
+                    <Pagination style={{ display: 'flex', width: '220px', margin: 'auto' }}>
+                        <Pagination.First onClick={() => { this.updatepagination("initial") }} />
                         <Pagination.Prev onClick={() => { this.updatepagination("prev") }} />
                         {items}
                         <Pagination.Next onClick={() => { this.updatepagination("next") }} />
+                        <Pagination.Last onClick={() => { this.updatepagination("final") }} />
                     </Pagination>
                 </div>
             </div>
         )
     }
 }
-const mapStateToProps  =(state)=>{
+const mapStateToProps = (state) => {
     return {
-     users:state.userReducer.users         
+        users: state.userReducer.users,
+        total: state.userReducer.totaluser
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onBlock: (email,status,filter)=>dispatch(useractions.blockusers(email,status,filter)),
-        onDelete: (email,filter)=>dispatch(useractions.deleteusers(email,filter)),
-        onGetUsers: (filter)=>dispatch(useractions.fetchusers(filter))
+        onBlock: (email, status, filter) => dispatch(useractions.blockusers(email, status, filter)),
+        onDelete: (email, filter) => dispatch(useractions.deleteusers(email, filter)),
+        onGetUsers: (filter) => dispatch(useractions.fetchusers(filter))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)( Userlist);
+export default connect(mapStateToProps, mapDispatchToProps)(Userlist);

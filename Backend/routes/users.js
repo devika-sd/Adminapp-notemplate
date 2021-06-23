@@ -10,18 +10,17 @@ router.route('/login')
     .post(adminSignin);//{{admin}}users/login
 
 
-router.route('/block/:email&:status')
-    .patch(protect, authorize('admin'), blockUser);//{{admin}}users/block/vrushali@gmail.com
+router.route('/block/:email&:isBlocked')
+    .patch(protect, authorize(), blockUser);//{{admin}}users/block/vrushali@gmail.com
 
 router.route('/:email')
-    .delete(protect, authorize('admin'), deleteUsersByEmail)
+    .delete(protect, authorize(), deleteUsersByEmail)
 
 router.route('/')
     .get(protect, advancedFind(Users), fetchAllUsers)
-    .post(protect, authorize('admin'), addUser)
+    .post(/*protect, authorize(),*/ addUser)
 
 router.route('/:_id')
-    .put(protect, authorize('admin'), updateUserDetails);
-
+    .put(protect, authorize(), updateUserDetails);
 
 module.exports = router;

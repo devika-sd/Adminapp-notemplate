@@ -20,14 +20,13 @@ export const SidebarData = [
   },
   {
     title: 'Orders',
-    path: '/Orders',
     icon: <FaIcons.FaCartPlus />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     subNav: [
         {
           title: 'Order List',
-          path: '/Orders/Orders1',
+          path: '/orderlist',
           icon: <IoIcons.IoIosPaper />,
           cName: 'sub-nav'
         }
@@ -35,7 +34,6 @@ export const SidebarData = [
   },
   {
     title: 'Users',
-    path: '/Users',
     icon: <IoIcons.IoMdPeople />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,

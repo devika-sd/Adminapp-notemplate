@@ -12,7 +12,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from "./components/Login";
 import Adduser from "./components/Adduser";
 import UserProfile from "./components/UserProfile";
-import Sidebar from './components/navbar/Sidebar'
+import Sidebar from './components/navbar/Sidebar';
+import Ordermodel from "./components/Ordermodel";
+import Orderlist from "./components/Orderlist";
 //import Register from "./components/Register";
 
 export default function App() {
@@ -27,7 +29,9 @@ export default function App() {
           <Route path="/adduser" component={Adduser}/>
           <Route path="/login" component={Login}/>
           <Route path="/userlist" component={Userlist}/>
+          <Route path="/orderlist" component={Orderlist}/>
           <Route path="/updateuser/:id" component={Updateuser}/>
+          <Route path="/ordermodel" component={Ordermodel}/>
         </Switch>
     </Router>
   );

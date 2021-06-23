@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import userReducer from './store/user-reducer';
 import authReducer from './store/auth-reducer';
+import orderReducer from './store/order-reducer';
 import thunkMiddleware from 'redux-thunk';
 import {Provider} from 'react-redux';
 
@@ -18,7 +19,7 @@ const loggerMiddleware = storeAPI => next => action => {
 }
 
 const myEnhancer = applyMiddleware(loggerMiddleware,thunkMiddleware)
-const appStore = createStore(combineReducers({userReducer,authReducer}) , myEnhancer)
+const appStore = createStore(combineReducers({userReducer,authReducer,orderReducer}) , myEnhancer)
 
 window.store=appStore;
 
