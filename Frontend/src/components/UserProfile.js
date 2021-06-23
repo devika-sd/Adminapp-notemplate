@@ -8,43 +8,39 @@ import * as useractions from '../action/user-action';
 function UserProfile(props) {
 
     let { id } = useParams();
-    const [address, setAddress] = useState('');
+    const [address, setAddress] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [phonenumber, setContact] = useState('');
+    const [cpassword, setCPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [phone, setContact] = useState('');
 
     const [enable, setEnable] = useState(true)
+    const [passwordEnable, setPasswordEnable] = useState(false)
 
-    const [addressError, setAddressError] = useState(true)
+    // const [addressError, setAddressError] = useState(true)
     const [nameError, setNameError] = useState(true)
     const [emailError, setEmailError] = useState(true)
     const [passwordError, setPasswordError] = useState(true)
+    const [cpasswordError, setCPasswordError] = useState(true)
     const [contactError, setContactError] = useState(true)
     console.log(id+"**********before************")
     useEffect(async() => {
-        await props.onGetUsers("?_id="+id);
-        console.log(props.users[0]);
-        setName(props.users[0].name)
-        setEmail(props.users[0].email)
-        setPassword(props.users[0].password)
-        setContact(props.users[0].phonenumber)
-        setAddress(props.users[0].address)
-    }, [props.users[0].name,id])
-    // methods for Events
-    const onAddressChange = (event) => {
-        var addressValue = (event.target.value);
-        const expression = new RegExp('[a-zA-Z0-9\\s]');
-        // console.log(nameValue);
-        if (!(expression.test(addressValue))) {
-            setAddress(addressValue)
-            setAddressError(false)
-        }
-        else {
-            setAddress(addressValue)
-            setAddressError(true)
-        }
-    }
+                await props.onGetUsers("_id="+id);
+                console.log(props.users[0])
+                setName(props.users[0].name)
+                setEmail(props.users[0].email)
+                setOldPassword(props.users[0].password)
+                setContact(props.users[0].phone)
+                var addresses=props.users[0].city+","+props.users[0].pinCode;
+                setAddress(props.users[0].addresses)
+                // setRole(data.data[0].role)
+                if (props.users[0].isAdmin) setPasswordEnable(true)
+                else setPasswordEnable(false)
+
+                console.log(passwordEnable);
+    }, [props.users[0],id])
     const onNameChange = (event) => {
         var nameValue = (event.target.value)
         const expression = new RegExp('^[a-zA-Z]{1}[a-zA-Z0-9\\s]{3,30}$');
@@ -60,7 +56,7 @@ function UserProfile(props) {
     }
     const onEmailChange = (event) => {
         var emailValue = (event.target.value);
-        const expression = new RegExp('^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$');
+        const expression = new RegExp('^\\w+([\\.-]?\\w+)@\\w+([\\.-]?\\w+)(\\.\\w{2,3})+$');
         // console.log(nameValue);
         if (!(expression.test(emailValue))) {
             setEmail(emailValue)
@@ -73,7 +69,7 @@ function UserProfile(props) {
     }
     const onPasswordChange = (event) => {
         var contactValue = (event.target.value);
-        const expression = new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$');
+        const expression = new RegExp('^(?=.[0-9])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{6,16}$');
         // console.log(nameValue);
         if (!(expression.test(contactValue))) {
             setPassword(contactValue)
@@ -82,6 +78,20 @@ function UserProfile(props) {
         else {
             setPassword(contactValue)
             setPasswordError(true)
+        }
+    }
+
+    const onCPasswordChange = (event) => {
+        var contactValue = (event.target.value);
+        const expression = new RegExp('^(?=.[0-9])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{6,16}$');
+        // console.log(nameValue);
+        if (!(expression.test(contactValue))) {
+            setCPassword(contactValue)
+            setCPasswordError(false)
+        }
+        else {
+            setCPassword(contactValue)
+            setCPasswordError(true)
         }
     }
 
@@ -100,22 +110,52 @@ function UserProfile(props) {
     }
 
     const Update = async (event) => {
-        let roleData = { name, email, password, address, phonenumber }
-        console.log(roleData)
-        props.onUpdate(id,roleData)
-        setEnable(true)
+        if (password.localeCompare(cpassword) === 0) {
+
+            let roleData = { name, email, password, address, phone }
+            console.log(roleData);
+            props.onUpdate(id,roleData)
+            setEnable(true)
+
+        }
+        else {
+            setCPasswordError(false)
+        }
         // FetchCalls.registerUser(roleData)
         // event.preventDefault()
     }
+
     const Edit = (event) => {
         console.log('Edit')
         setEnable(false)
         // FetchCalls.registerUser(roleData)
         // event.preventDefault()
     }
+
+    var addresslist = props.users[0].addresses.map((address,i)=>{
+        var newAdd=address.houseNumber+" ,"+address.locality+" ,"+address.city+" ,"+address.state+" ,"+address.country+" ,"+address.pinCode;
+        return <Form.Group as={Row} className="mb-3" >
+        <Form.Label style={{
+            // border: '1px solid lightgrey',
+            padding: '10px 15px',
+            textTransform: 'capitalize',
+            fontSize: '18px'
+            // borderRadius: '5px',
+            // outline: 'none'
+
+        }} column sm={3}>Address {i?i:null}</Form.Label>
+        <Col sm={9}>
+            <Form.Control type="text" value={newAdd} onChange={onNameChange} placeholder="Enter Name" />
+        </Col>
+        {!nameError && <Form.Text className="text-danger">
+            Please Enter Valid Name (paddu)
+        </Form.Text>}
+    </Form.Group>
+    })
+
     return (
         <>
-            <Card className="border border-muted" style={{
+                       <Card className="border border-muted" style={{
                 padding: '10px 15px',
                 margin: '60px auto',
                 boxSizing: 'border-box',
@@ -178,26 +218,7 @@ function UserProfile(props) {
                                     </Col>
 
                                 </Form.Group>
-                                <Form.Group as={Row} className="mb-3" >
-                                    <Form.Label style={{
-                                        // border: '1px solid lightgrey',
-                                        padding: '10px 15px',
-                                        textTransform: 'capitalize',
-                                        fontSize: '18px'
-                                        // borderRadius: '5px',
-                                        // outline: 'none'
 
-                                    }} column sm={3}>Password</Form.Label>
-                                    <Col sm={9}>
-                                        <Form.Control readOnly plaintext style={{
-                                            border: '1px solid lightgrey',
-                                            padding: '10px 15px',
-                                            borderRadius: '5px',
-                                            outline: 'none'
-                                        }} type="text" value={password} onChange={onPasswordChange} placeholder="Enter Password" />
-                                    </Col>
-
-                                </Form.Group>
                                 <Form.Group as={Row} className="mb-3" >
                                     <Form.Label style={{
                                         // border: '1px solid lightgrey',
@@ -214,31 +235,12 @@ function UserProfile(props) {
                                             padding: '10px 15px',
                                             borderRadius: '5px',
                                             outline: 'none'
-                                        }} type="text" value={phonenumber} onChange={onContactChange} placeholder="Enter Contact Number" />
+                                        }} type="text" value={phone} onChange={onContactChange} placeholder="Enter Contact Number" />
                                     </Col>
 
                                 </Form.Group>
+                                {addresslist}
 
-                                <Form.Group as={Row} className="mb-3" >
-                                    <Form.Label style={{
-                                        // border: '1px solid lightgrey',
-                                        padding: '10px 15px',
-                                        textTransform: 'capitalize',
-                                        fontSize: '18px'
-                                        // borderRadius: '5px',
-                                        // outline: 'none'
-
-                                    }} column sm={3}>Address</Form.Label>
-                                    <Col sm={9}>
-                                        <Form.Control readOnly plaintext style={{
-                                            border: '1px solid lightgrey',
-                                            padding: '10px 15px',
-                                            borderRadius: '5px',
-                                            outline: 'none'
-                                        }} type="text" value={address} onChange={onAddressChange}>
-                                        </Form.Control>
-                                    </Col>
-                                </Form.Group>
                                 <Form.Group as={Row}>
                                     <Col sm={6}>
                                         <Button variant="primary" block onClick={Edit}>EDIT</Button>
@@ -288,23 +290,47 @@ function UserProfile(props) {
                                     Please Enter Valid Email (paddu@gmail.com)
                                 </Form.Text>}
                             </Form.Group>
-                            <Form.Group as={Row} className="mb-3" >
-                                <Form.Label style={{
-                                    // border: '1px solid lightgrey',
-                                    padding: '10px 15px',
-                                    textTransform: 'capitalize',
-                                    fontSize: '18px'
-                                    // borderRadius: '5px',
-                                    // outline: 'none'
+                            {passwordEnable &&
+                                <Form.Group as={Row} className="mb-3" >
+                                    <Form.Label style={{
+                                        // border: '1px solid lightgrey',
+                                        padding: '10px 15px',
+                                        textTransform: 'capitalize',
+                                        fontSize: '18px'
+                                        // borderRadius: '5px',
+                                        // outline: 'none'
 
-                                }} column sm={3}>Password</Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="text" value={password} onChange={onPasswordChange} placeholder="Enter Password" />
-                                </Col>
-                                {!passwordError && <Form.Text className="text-danger">
-                                    Please Enter Valid Password (paddu@0y)
-                                </Form.Text>}
-                            </Form.Group>
+                                    }} column sm={3}>Password</Form.Label>
+                                    <Col sm={9}>
+                                        <Form.Control type="text" value={password} onChange={onPasswordChange} placeholder="Enter Password" />
+                                    </Col>
+                                    {!passwordError && <Form.Text className="text-danger">
+                                        Please Enter Valid Password (paddu@0y)
+                                    </Form.Text>}
+                                </Form.Group>
+
+                            }
+                            {passwordEnable &&
+                                <Form.Group as={Row} className="mb-3" >
+                                    <Form.Label style={{
+                                        // border: '1px solid lightgrey',
+                                        padding: '10px 15px',
+                                        textTransform: 'capitalize',
+                                        fontSize: '18px'
+                                        // borderRadius: '5px',
+                                        // outline: 'none'
+
+                                    }} column sm={3}>Confirm Password</Form.Label>
+                                    <Col sm={9}>
+                                        <Form.Control type="text" value={cpassword} onChange={onCPasswordChange} placeholder="Enter Password" />
+                                    </Col>
+                                    {!cpasswordError && <Form.Text className="text-danger">
+                                        Please Enter Valid Password (paddu@0y)
+                                    </Form.Text>}
+                                </Form.Group>
+
+                            }
+
                             <Form.Group as={Row} className="mb-3" >
                                 <Form.Label style={{
                                     // border: '1px solid lightgrey',
@@ -316,29 +342,10 @@ function UserProfile(props) {
 
                                 }} column sm={3}>Contact No.</Form.Label>
                                 <Col sm={9}>
-                                    <Form.Control type="text" value={phonenumber} onChange={onContactChange} placeholder="Enter Contact Number" />
+                                    <Form.Control type="text" value={phone} onChange={onContactChange} placeholder="Enter Contact Number" />
                                 </Col>
                                 {!contactError && <Form.Text className="text-danger">
                                     Please Enter Valid Contact number (9284556633)
-                                </Form.Text>}
-                            </Form.Group>
-
-                            <Form.Group as={Row} className="mb-3" >
-                                <Form.Label style={{
-                                    // border: '1px solid lightgrey',
-                                    padding: '10px 15px',
-                                    textTransform: 'capitalize',
-                                    fontSize: '18px'
-                                    // borderRadius: '5px',
-                                    // outline: 'none'
-
-                                }} column sm={3}>Address</Form.Label>
-                                <Col sm={9}>
-                                    <Form.Control type="text" value={address} onChange={onAddressChange}>
-                                    </Form.Control>
-                                </Col>
-                                {!addressError && <Form.Text className="text-danger">
-                                    Please provide a valid Address
                                 </Form.Text>}
                             </Form.Group>
                             <Form.Group as={Row}>

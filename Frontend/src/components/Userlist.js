@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table } from 'react-bootstrap'
+import { Table,Form,FormControl,Button } from 'react-bootstrap'
 import Pagination from 'react-bootstrap/Pagination'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ class Userlist extends Component {
 
     constructor(props) {
         super(props)
-        this.state = { users: [], active: 1,maxpage:1, limit: 5, pageno: [1, 2, 3], open: false }
+        this.state = { users: [], active: 1, maxpage: 1, limit: 5, pageno: [1, 2, 3], open: false }
     }
 
     componentDidMount() {
@@ -24,21 +24,19 @@ class Userlist extends Component {
         await this.props.onGetUsers("page=" + this.state.active + "&limit=" + this.state.limit);
     }
     async updatepagination(current) {
-        var max=1;
-        max=this.props.total/this.state.limit;
+        var max = 1;
+        max = this.props.total / this.state.limit;
         console.log(max);
-        this.setState({maxpage:max});
-        if(current === 'initial')
-        {
-            let temparrr=[1,2,3];
-            await this.setState({pageno: temparrr, active: 1 });
+        this.setState({ maxpage: max });
+        if (current === 'initial') {
+            let temparrr = [1, 2, 3];
+            await this.setState({ pageno: temparrr, active: 1 });
             await this.getUsers();
         }
-        if(current === 'final')
-        {
-            let temp=max > Math.floor(this.props.total/this.state.limit)?Math.floor(max)+1:Math.floor(max);
-            let temparrr=[temp-2,temp-1,temp];
-            await this.setState({pageno: temparrr, active: temp });
+        if (current === 'final') {
+            let temp = max > Math.floor(this.props.total / this.state.limit) ? Math.floor(max) + 1 : Math.floor(max);
+            let temparrr = [temp - 2, temp - 1, temp];
+            await this.setState({ pageno: temparrr, active: temp });
             await this.getUsers();
         }
         if (this.state.pageno[2] < max) {
@@ -75,6 +73,11 @@ class Userlist extends Component {
     onUpdateUser(id) {
         this.props.history.push("/updateuser/" + id);
     }
+    filterdata(e)
+    {
+        console.log(e.target.value);
+        this.props.onfilterUsers(e.target.value);
+    }
 
     render() {
         let items = this.state.pageno.map((value) => {
@@ -103,6 +106,10 @@ class Userlist extends Component {
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <div className="container-fluid">
                         <a className="navbar-brand" href="#">Userlist</a>
+                        <Form inline>
+                            <FormControl type="text" placeholder="Search" onChange={this.filterdata.bind(this)} className="mr-sm-2" />
+                            <Button variant="outline-success">Search</Button>
+                        </Form>
                     </div>
                 </nav>
 
@@ -146,7 +153,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onBlock: (email, status, filter) => dispatch(useractions.blockusers(email, status, filter)),
         onDelete: (email, filter) => dispatch(useractions.deleteusers(email, filter)),
-        onGetUsers: (filter) => dispatch(useractions.fetchusers(filter))
+        onGetUsers: (filter) => dispatch(useractions.fetchusers(filter)),
+        onfilterUsers: (word) => dispatch(useractions.filteruserbyname(word))
+
     }
 }
 

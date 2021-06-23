@@ -5,7 +5,23 @@ export const UPDATE_USER = "UPDATE_USER"
 export const LOGIN_USER = "LOGIN_USER"
 export const ADD_USER = "ADD_USER"
 export const ERROR_USER = "ERROR_USER"
+export const FILTER_USER = "FILTER_USER"
 
+export const filteruserbyname = (name) => {
+    //add your code
+    console.log("***************"+name);
+    return dispatch => {
+        fetch('http://localhost:8080/api/v1/users/filter/'+name , {
+            headers: authHeader()
+        })
+            .then(res => res.json())
+            .then(data => {
+                //this.setState({ users: data.data })
+                console.log(data)
+                dispatch({ type: FILTER_USER, payload: data });
+            })
+    }
+}
 
 export const fetchusers = (filter) => {
     //add your code

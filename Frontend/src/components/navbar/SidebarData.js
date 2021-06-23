@@ -14,7 +14,7 @@ export const SidebarData = [
   },
   {
     title: 'Profile',
-    path: '/userprofile/60c873bd5c2daf23b8b4a4e1',
+    path: '/userprofile/',
     icon: <AiIcons.AiFillContacts />,
     cName: 'nav-text'
   },

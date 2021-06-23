@@ -32,7 +32,7 @@ const reducer = (state = initialState, action) =>{
             }
         case actions.ERROR_USER:
             return {
-                // users: action.payload
+                // users: action.payload 
                 ...state,
                 message: action.payload.message
             }
@@ -40,6 +40,11 @@ const reducer = (state = initialState, action) =>{
                 return {
                     ...state,
                     message: action.payload.message
+                }
+        case actions.FILTER_USER:
+                return {
+                    ...state,
+                    users: action.payload.data
                 }
         default : return state
     }

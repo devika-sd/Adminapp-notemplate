@@ -4,7 +4,7 @@ const { blockUser, adminSignin, fetchAllUsers, addUser, updateUserDetails, delet
 const { protect, authorize } = require('../middleware/auth');
 var advancedFind = require('../middleware/Advancedfind');
 const Users = require('../models/users');
-
+var wordsearch = require('../middleware/wordsearch');
 
 router.route('/login')
     .post(adminSignin);//{{admin}}users/login
@@ -19,6 +19,9 @@ router.route('/:email')
 router.route('/')
     .get(protect, advancedFind(Users), fetchAllUsers)
     .post(/*protect, authorize(),*/ addUser)
+
+router.route('/filter/:word')
+    .get(protect, wordsearch(Users))
 
 router.route('/:_id')
     .put(protect, authorize(), updateUserDetails);
