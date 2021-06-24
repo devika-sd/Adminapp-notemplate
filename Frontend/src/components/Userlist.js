@@ -72,13 +72,18 @@ class Userlist extends Component {
     onUpdateUser(id) {
         this.props.history.push("/updateuser/" + id);
     }
-    filterdata(e)
+    async filterdata(e)
     {
         if(e.target.value.length>=3)
         {
             this.setState({word:e.target.value,active:1})
             console.log(e.target.value);
             this.props.onfilterUsers(e.target.value,this.state.active,this.state.limit);
+
+        }
+        else
+        {
+            await this.getUsers()
         }
     }
 

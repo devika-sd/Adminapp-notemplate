@@ -15,7 +15,7 @@ const advancedFind = (model, populate) =>  async (req, res, next)=> {
   let queryStr = JSON.stringify(reqQuery);
 
   // Create operators ($gt, $gte, etc)
-  queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in|regex|text|search)\b/g, match => `$${match}`);
+  queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in|regex)\b/g, match => `$${match}`);
 
   console.log(queryStr);
 
