@@ -12,14 +12,16 @@ const UsersSchema = new schema({
         lowercase: true,
         trim: true,
         required: [true, 'Please provide a Name'],
-        match: [/[a-zA-Z]{4,}/, 'Please provide a valid Name']
+        match: [/[a-zA-Z]{4,}/, 'Please provide a valid Name'],
+        index: true
     },
     email: {
         type: String,
         unique: true,
         trim: true,
         required: [true, 'Please provide a Email'],
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid Email Address']
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid Email Address'],
+        index: true
     },
     password: {
         type: String,
@@ -46,7 +48,7 @@ const UsersSchema = new schema({
         default: false
     }
 });
-UsersSchema.index({'name': 'text', 'email': 'text'});
+UsersSchema.index({name: 'text', email: 'text'});
 UsersSchema.methods.generateToken = async function () {
     let token = await jwt.sign({ _id: this._id, isAdmin: this.isAdmin, isBlocked: this.isBlocked }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
     return token;

@@ -7,11 +7,13 @@ export const ADD_USER = "ADD_USER"
 export const ERROR_USER = "ERROR_USER"
 export const FILTER_USER = "FILTER_USER"
 
-export const filteruserbyname = (name) => {
+export const filteruserbyname = (name,page,limit) => {
     //add your code
-    console.log("***************"+name);
+    console.log("***************"+name,page,limit);
+    var filter = 'email[regex]='+name+'&page='+page+'&limit='+limit;
+    console.log("*************"+filter+"************")
     return dispatch => {
-        fetch('http://localhost:8080/api/v1/users/filter/'+name , {
+        fetch('http://localhost:8080/api/v1/users/?sort=name&'+filter , {
             headers: authHeader()
         })
             .then(res => res.json())

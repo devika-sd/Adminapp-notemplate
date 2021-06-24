@@ -6,7 +6,6 @@ import {connect} from 'react-redux';
 import * as useractions from '../action/user-action';
 
 function UserProfile(props) {
-
     let { id } = useParams();
     const [address, setAddress] = useState([]);
     const [name, setName] = useState('');
@@ -40,7 +39,7 @@ function UserProfile(props) {
                 else setPasswordEnable(false)
 
                 console.log(passwordEnable);
-    }, [props.users[0],id])
+    }, [props.users[0].email,id])
     const onNameChange = (event) => {
         var nameValue = (event.target.value)
         const expression = new RegExp('^[a-zA-Z]{1}[a-zA-Z0-9\\s]{3,30}$');
@@ -131,7 +130,8 @@ function UserProfile(props) {
         // FetchCalls.registerUser(roleData)
         // event.preventDefault()
     }
-
+    if(props.users.length !== 0)
+    {
     var addresslist = props.users[0].addresses.map((address,i)=>{
         var newAdd=address.houseNumber+" ,"+address.locality+" ,"+address.city+" ,"+address.state+" ,"+address.country+" ,"+address.pinCode;
         return <Form.Group as={Row} className="mb-3" >
@@ -152,7 +152,7 @@ function UserProfile(props) {
         </Form.Text>}
     </Form.Group>
     })
-
+    }
     return (
         <>
                        <Card className="border border-muted" style={{
@@ -302,7 +302,7 @@ function UserProfile(props) {
 
                                     }} column sm={3}>Password</Form.Label>
                                     <Col sm={9}>
-                                        <Form.Control type="text" value={password} onChange={onPasswordChange} placeholder="Enter Password" />
+                                        <Form.Control type="text" value={password} onChange={onPasswordChange} placeholder="New Password" />
                                     </Col>
                                     {!passwordError && <Form.Text className="text-danger">
                                         Please Enter Valid Password (paddu@0y)
@@ -322,7 +322,7 @@ function UserProfile(props) {
 
                                     }} column sm={3}>Confirm Password</Form.Label>
                                     <Col sm={9}>
-                                        <Form.Control type="text" value={cpassword} onChange={onCPasswordChange} placeholder="Enter Password" />
+                                        <Form.Control type="text" value={cpassword} onChange={onCPasswordChange} placeholder="Confirm Password" />
                                     </Col>
                                     {!cpasswordError && <Form.Text className="text-danger">
                                         Please Enter Valid Password (paddu@0y)
@@ -368,6 +368,7 @@ function UserProfile(props) {
 const mapStateToProps  =(state)=>{
     return { 
         users:state.userReducer.users,
+        authenticated:state.authReducer.authenticated
     }
 }
 
