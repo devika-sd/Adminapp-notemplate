@@ -258,7 +258,7 @@ class Adduser extends Component {
 
                                             <Form.Group as={Col} controlId="formGridCountry">
                                                 <Form.Control as="select" onChange={this.countryCheck.bind(this)} custom size="lg">
-                                                    <option value="0">Select Country</option>
+                                                    <option value="">Select Country</option>
                                                     <option value="India">India</option>
                                                 </Form.Control>
                                             </Form.Group>

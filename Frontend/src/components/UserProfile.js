@@ -33,7 +33,7 @@ function UserProfile(props) {
                 setOldPassword(props.users[0].password)
                 setContact(props.users[0].phone)
                 var addresses=props.users[0].city+","+props.users[0].pinCode;
-                setAddress(props.users[0].addresses)
+                setAddress(addresses)
                 // setRole(data.data[0].role)
                 if (props.users[0].isAdmin) setPasswordEnable(true)
                 else setPasswordEnable(false)
